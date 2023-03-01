@@ -1,0 +1,22 @@
+{
+  "name": "labecommerce-backend",
+  "version": "1.0.0",
+  "description": "Projeto desenvolvido no curso Full-Stack Labenu",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tibas-ce/labecommerce-backend.git"
+  },
+  "keywords": [ "comercio", "business"],
+  "author": "Tiberio Ferreira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tibas-ce/labecommerce-backend/issues"
+  },
+  "homepage": "https://github.com/tibas-ce/labecommerce-backend#readme"
+}
