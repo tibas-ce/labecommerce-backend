@@ -1,19 +1,27 @@
-export type tUser = {
+export type TUser = {
     id: string,
+    name?: string,
     email: string,
-    password: string
+    password: string,
 };
 
-export type tProduct = {
+export type TProduct = {
     id: string,
     name: string,
     price: number,
-    category: string
+    category: ECategory
 };
 
-export type tPurchase = {
+export enum ECategory {
+    ACCESSORIES = "Acessórios",
+    CLOTHES_AND_SHOES = "Roupas e calçados",
+    ELECTRONICS = "Eletrônicos"
+}
+
+export type TPurchase = {
     userId: string,
-    productId: string,
-    quantity: number,
-    totalPrice: number
+    productId?: string,
+    quantity?: number,
+    totalPrice?: number
 };
+
