@@ -1,4 +1,4 @@
-import express, { query, Request, Response} from "express";
+import express, { Request, Response} from "express";
 import cors from "cors";
 import { users, products, purchases, createUser, getAllUsers, createProduct, getProductById, queryProductsByName, createPurchase, getAllPurchasesFromUserId } from "./database";
 import { ECategory, TProduct, TUser, TPurchase } from "./types";
@@ -83,4 +83,72 @@ app.post("/puchases", (req: Request, res: Response) => {
     };
     purchases.push(newPurchase);
     res.status(201).send("Compra realizada com sucesso!");
+});
+
+//exercícios aprofundamento express
+
+//getProductsById - buscar produtos por id
+app.get("/products/:id", (req: Request, res: Response) => {
+    const id : string = req.params.id;
+    const result : TProduct | undefined = products.find(product => product.id === id);
+    res.status(200).send(result); 
+});
+
+//getUserPurchasesById - buscar compras através do id do usuário
+app.get("/purchases/:id", (req: Request, res: Response) => {
+    const id : string = req.params.id;
+    const result : TPurchase | undefined = purchases.find(purchase => purchase.userId === id);
+    res.status(200).send(result);
+});
+
+//editUserById - editar usuário 
+app.put("/users/:id", (req: Request, res: Response) => {
+    const id : string = req.params.id;
+    const newName : string | undefined = req.body.name;
+    const newEmail : string | undefined = req.body.email;
+    const newPassword : string | undefined = req.body.password;
+    
+    const findUser : TUser | undefined = users.find(user => user.id === id);
+    if(findUser){
+        findUser.name = newName || findUser.name;
+        findUser.email = newEmail || findUser.email;
+        findUser.password = newPassword || findUser.password;
+    };
+    res.status(200).send("Cadastro atualizado com sucesso!");
+});
+
+//editProductById - editar produto
+app.put("/products/:id", (req: Request, res: Response) => {
+    const id : string = req.params.id;
+    const newName : string | undefined = req.body.name;
+    const newPrice : number | 0 = req.body.price;
+    const newCategory : ECategory | undefined = req.body.category;
+    
+    const findProduct : TProduct | undefined = products.find(product => product.id === id);
+    if(findProduct){
+        findProduct.name = newName || findProduct.name;
+        findProduct.price = isNaN(newPrice) ? findProduct.price : newPrice;
+        findProduct.category = newCategory || findProduct.category;
+    };
+    res.status(200).send("Produto atualizado com sucesso!");
+});
+
+//deleteUserById - deletando usuário por id
+app.delete("/users/:id", (req: Request, res: Response) => {
+    const id = req.params.id;
+    const index = users.findIndex(user => user.id === id);
+    if(index >= 0){
+        users.splice(index, 1);
+    };
+    res.status(200).send("Usuário apagado com sucesso!");
+});
+
+//deleteProductById - deletando produto por id
+app.delete("/products/:id", (req: Request, res: Response) => {
+    const id : string = req.params.id;
+    const index = products.findIndex(product => product.id === id);
+    if(index >= 0){
+        products.splice(index, 1);
+    };
+    res.status(200).send("Produto apagado com sucesso!");
 });

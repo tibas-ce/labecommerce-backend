@@ -5,18 +5,18 @@ export type TUser = {
     password: string,
 };
 
+export enum ECategory {
+    ACCESSORIES = "Acessórios",
+    CLOTHES_AND_SHOES = "Roupas e calçados",
+    ELECTRONICS = "Eletrônicos"
+};
+
 export type TProduct = {
     id: string,
     name: string,
     price: number,
     category: ECategory
 };
-
-export enum ECategory {
-    ACCESSORIES = "Acessórios",
-    CLOTHES_AND_SHOES = "Roupas e calçados",
-    ELECTRONICS = "Eletrônicos"
-}
 
 export type TPurchase = {
     userId: string,
