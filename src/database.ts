@@ -19,8 +19,8 @@ export const users:  Array<TUser> = [
 ];
 
 //criar usuário
-export const createUser = (id: string, email:string, password: string) : void => {
-    const newUser : TUser = {id, email, password};
+export const createUser = (id: string, name:string, email:string, password: string) : void => {
+    const newUser : TUser = {id, name, email, password};
     users.push(newUser);
     return (
         console.log("Cadastro realizado com sucesso.")

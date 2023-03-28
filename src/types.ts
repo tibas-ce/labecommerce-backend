@@ -1,6 +1,6 @@
 export type TUser = {
     id: string,
-    name?: string,
+    name: string,
     email: string,
     password: string,
 };
@@ -20,8 +20,7 @@ export type TProduct = {
 
 export type TPurchase = {
     userId: string,
-    productId?: string,
-    quantity?: number,
-    totalPrice?: number
+    productId: string,
+    quantity: number,
+    totalPrice: number
 };
-
