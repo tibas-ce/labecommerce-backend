@@ -30,6 +30,23 @@ VALUES
 ("p004", "Monitor HD", 800, "Eletrônicos"),
 ("p005", "Suporte TV", 50, "Acessorios");
 
+-- criando tabela purchases
+CREATE TABLE purchases (
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    total_price REAL NOT NULL,
+    paid INTEGER NOT NULL,
+    delivered_at TEXT,
+    buyer_id TEXT NOT NULL,
+    FOREIGN KEY(buyer_id) REFERENCES users(id)
+);
+
+-- populando tabela purchases
+INSERT INTO purchases (id, total_price, paid, buyer_id) VALUES
+("pu001", 1500, 0, "u001"),
+("pu002", 100, 0, "u002"),
+("pu003", 500, 0, "u002"),
+("pu004", 100, 0, "u001");
+
 -- deletando tabelas
 -- users
 DROP TABLE users;
@@ -101,3 +118,14 @@ SET
     category = "Eletrônicos"
 WHERE id = "p002";    
 
+-- Edite o status da data de entrega de um pedido
+UPDATE purchases
+SET 
+    delivered_at = datetime("now")
+WHERE id = "pu001";
+
+-- query de consulta: histórico de compras
+SELECT purchases.buyer_id AS HistoricoCompras, purchases.total_price, purchases.delivered_at FROM purchases
+INNER JOIN users
+ON users.id = buyer_id
+WHERE buyer_id = "u001";
