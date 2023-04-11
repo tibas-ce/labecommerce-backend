@@ -450,10 +450,10 @@ app.put("/users/:id", (req: Request, res: Response) => {
 //refatorando para uso de try/catch (exercícios - fluxo de dados) 
 app.put("/products/:id", (req: Request, res: Response) => {
     try {
-        const id : string = req.params.id;
-        const newName : string | undefined = req.body.name;
-        const newPrice : number | 0 = req.body.price;
-        const newCategory : ECategory | undefined = req.body.category;
+        const id = req.params.id;
+        const newName = req.body.name;
+        const newPrice = req.body.price;
+        const newCategory = req.body.category;
         //validando o body
         if(typeof id !== "string"){
             res.status(400)
@@ -479,28 +479,29 @@ app.put("/products/:id", (req: Request, res: Response) => {
             res.status(400)
             throw new Error("'newPrice' precisa ser uma 'number'.")
         }
-        if(typeof newCategory !== "string"){
-            res.status(400)
-            throw new Error("'newCategory' precisa ser preenchido com uma das opções: 'Acessorios', 'Roupas' ou 'Eletrônicos' .")
-        }
-        if(!newCategory){
-            res.status(400)
-            throw new Error("'newCategory' precisa ser uma 'string'.")
-        }
+        if(typeof newCategory !== undefined){
+            if(
+                newCategory !== ECategory.ACCESSORIES &&
+                newCategory !== ECategory.CLOTHES_AND_SHOES &&
+                newCategory !== ECategory.ELECTRONICS) {
+                    res.status(400)
+                    throw new Error("'newCategory' precisa ser preenchido com uma das opções: 'Acessorios', 'Roupas' ou 'Eletrônicos' .")
+                }
+            }
         //validação de produto existente
         const productIdExists = products.find((product) => product.id === id);
         if(productIdExists){
             //atualizando produto
-        const findProduct : TProduct | undefined = products.find(product => product.id === id);
-        if(findProduct){
-            findProduct.name = newName || findProduct.name;
-            findProduct.price = isNaN(newPrice) ? findProduct.price : newPrice;
-            findProduct.category = newCategory || findProduct.category;
-        };
-        res.status(200).send("Produto atualizado com sucesso!");    
+            const findProduct : TProduct | undefined = products.find(product => product.id === id);
+            if(findProduct){
+                findProduct.name = newName || findProduct.name;
+                findProduct.price = isNaN(newPrice) ? findProduct.price : newPrice;
+                findProduct.category = newCategory || findProduct.category;
+            };
+            res.status(200).send("Produto atualizado com sucesso!");    
         } else {
             res.status(400);
-            throw new Error("Produto encontrado.");
+            throw new Error("Produto não encontrado, verificar id.");
         }
     } catch(error){
         console.log(error);
