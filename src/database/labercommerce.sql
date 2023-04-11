@@ -5,53 +5,76 @@ CREATE TABLE users (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    created_at TEXT DEFAULT(DATETIME()) NOT NULL
 );
-
--- populando tabela users
-INSERT INTO users (id, name, email, password) VALUES ("u001", "Gandalf O Branco", "gandalf@email.com", "010203"),
-("u002", "Ozzy Osbourn", "ozzy@email.com", "040506"),
-("u003", "Joel Miller", "joel@email.com", "589624");
 
 -- criando tabela  de produtos
 CREATE TABLE products (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     name TEXT NOT NULL,
     price REAL NOT NULL,
-    category TEXT NOT NULL
+    category TEXT NOT NULL,
+    description TEXT NOT NULL,
+    image_url TEXT NOT NULL
 );
-
--- populando tabela products
-INSERT INTO products (id, name, price, category) 
-VALUES
-("p001", "Playstation 5", 4000, "Eletrônicos"),
-("p002", "Suporte de mesa", 130, "Acessorios"),
-("p003", "Tênis Adidas", 220, "Roupas e calçados"),
-("p004", "Monitor HD", 800, "Eletrônicos"),
-("p005", "Suporte TV", 50, "Acessorios");
 
 -- criando tabela purchases
 CREATE TABLE purchases (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     total_price REAL NOT NULL,
-    paid INTEGER NOT NULL,
+    paid INTEGER DEFAULT(0) NOT NULL,
+    created_at TEXT DEFAULT(DATETIME()) NOT NULL,
     delivered_at TEXT,
     buyer_id TEXT NOT NULL,
     FOREIGN KEY(buyer_id) REFERENCES users(id)
 );
 
+
+-- Criando tabela de relações
+CREATE TABLE purchases_products (
+    purchase_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    quantity INTEGER DEFAULT(1) NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchases(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+
+-- populando tabela users
+INSERT INTO users (id, name, email, password) VALUES 
+("u001", "fulano", "fulanof@email.com", "010203"),
+("u002", "fulana", "fulana@email.com", "040506"),
+("u003", "cicrano", "cicrano@email.com", "589624");
+
+-- populando tabela products
+INSERT INTO products (id, name, price, category, description, image_url) 
+VALUES
+("p001", "Playstation 5", 4000, "Eletrônicos", "especificações", "imagem"),
+("p002", "Suporte de mesa", 130, "Acessorios", "especificações", "imagem"),
+("p003", "Tênis Adidas", 220, "Roupas e calçados", "especificações", "imagem"),
+("p004", "Monitor HD", 800, "Eletrônicos", "especificações", "imagem"),
+("p005", "Suporte TV", 50, "Acessorios", "especificações", "imagem");
+
 -- populando tabela purchases
 INSERT INTO purchases (id, total_price, paid, buyer_id) VALUES
-("pu001", 1500, 0, "u001"),
-("pu002", 100, 0, "u002"),
-("pu003", 500, 0, "u002"),
-("pu004", 100, 0, "u001");
+("pu001", 4000, 0, "u001"),
+("pu002", 3500, 0, "u002"),
+("pu003", 850, 0, "u002"),
+("pu004", 220, 0, "u001");
+
+INSERT INTO purchases_products VALUES
+("pu001", "p001", 1),
+("pu002", "p002", 1),
+("pu002", "p003", 1),
+("pu003", "p004", 2),
+("pu003", "p005", 1),
+("pu004", "p003", 1);
 
 -- deletando tabelas
--- users
-DROP TABLE users;
--- products
-DROP TABLE products;
+-- só trocar o valor para a tabela que deseja apagar
+DROP TABLE purchases_products;
+
 
 -- getAllUsers (retorna todos os usuários)
 SELECT * FROM users;
@@ -83,12 +106,12 @@ WHERE name LIKE "Mon%";
 -- createUser (criar usuário)
 INSERT INTO users (id, name, email, password)
 VALUES
-("u004", "Virgulino Lampião", "lampiao@email.com", "192358");
+("u004", "cicrana", "cicrana@email.com", "192358");
 
 -- createProducts (criar produtos)
-INSERT INTO products (id, name, price, category)
+INSERT INTO products (id, name, price, category, description, image_url)
 VALUES
-("p006", "Bota Adventure", 159, "Roupas e calçados");
+("p006", "Bota Adventure", 159, "Roupas e calçados","especificações", "imagem");
 
 -- getProductsById (busca de produtos por id)
 SELECT * FROM products
@@ -108,7 +131,7 @@ SET
     name = "Fulano",
     email = "fulano@email.com",
     password = "f15a62"
-WHERE id = "u001";
+WHERE id = "u003";
 
 -- editProductById (editando produto poor id)
 UPDATE products
@@ -129,3 +152,21 @@ SELECT purchases.buyer_id AS HistoricoCompras, purchases.total_price, purchases.
 INNER JOIN users
 ON users.id = buyer_id
 WHERE buyer_id = "u001";
+
+-- query de consulta: junção INNER JOIN
+-- todas as colunas das tabelas relacionadas
+SELECT * FROM purchases_products
+INNER JOIN purchases
+ON purchases.id = purchases_products.purchase_id
+INNER JOIN products
+ON products.id = purchases_products.product_id;
+
+-- query de consulta: com valores especificos
+SELECT 
+products.name ,purchases_products.quantity, purchases.total_price,
+products.price, purchases.id  
+FROM purchases_products
+INNER JOIN purchases
+ON purchases.id = purchases_products.purchase_id
+INNER JOIN products
+ON products.id = purchases_products.product_id;
